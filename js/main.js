@@ -23,8 +23,8 @@ loader.onStart = function() {
 
 
 function init() {
-  // var stream = new Stream('audio/splendor.mp3', audioController);
-  // stream.play();
+  var stream = new Stream('audio/pond.mp3', audioController);
+  stream.play();
   clock = new THREE.Clock();
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({
@@ -32,7 +32,6 @@ function init() {
   });
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 200000);
   camera.position.set(99, 465, 581)
-  camera.lookAt(new THREE.Vector3());
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   container = document.createElement('div');
@@ -41,7 +40,6 @@ function init() {
   container.appendChild(renderer.domElement);
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
-  // controls.maxPolarAngle = Math.PI / 2.1;
 
   objectControls = new ObjectControls(camera);
 
@@ -58,7 +56,6 @@ function animate() {
   objectControls.update();
   audioController.update();
   renderer.render(scene, camera);
-  pond.update();
   TWEEN.update();
 }
 
@@ -73,8 +70,8 @@ var shaders = new ShaderLoader('shaders');
 loader.beginLoading();
 shaders.load('vs-pond', 'pond', 'vertex');
 shaders.load('fs-pond', 'pond', 'fragment');
-shaders.load('vs-ball', 'ball', 'vertex');
-shaders.load('fs-ball', 'ball', 'fragment');
+shaders.load('vs-lotus', 'lotus', 'vertex');
+shaders.load('fs-lotus', 'lotus', 'fragment');
 
 shaders.shaderSetLoaded = function() {
   loader.endLoading();

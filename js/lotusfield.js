@@ -1,17 +1,12 @@
 var LotusField = function() {
-  var color = new THREE.Vector3(1.0, 0.2, 1.0);
-  var numLotuses = 10;
+  this.s = 11;
+  this.lotuses = [];
+
+
   var xoff = 0,
     yoff = 0;
-  var petals = [];
-  var numPetals = 11;
-  var vertexCount = 0;
-  var radius = 700
-  var petalHeight = 50
-  var lotuses = [];
-  var mainLotusOffset = 100
 
-  var petalShape = new THREE.Shape(); // From http://blog.burlock.org/html5/130-paths
+  var petalShape = new THREE.Shape();
   //262, 16
   var x = 262;
   petalShape.moveTo(xoff, yoff);
@@ -29,8 +24,36 @@ var LotusField = function() {
     bevelEnabled: false
   }
 
-  var geo = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
+  this.petalGeo = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
   // geo.applyMatrix( new THREE.Matrix4().makeTranslation( new THREE.Vector3(0, 0, 0) ) );
+
+
+
+  this.createLotus(new THREE.Vector3(), new THREE.Vector3(0.8, 0.1, 1.0), true);
+
+}
+
+LotusField.prototype.createLotus = function(position, color) {
+  var lotus = new THREE.Object3D()
+  this.lotuses.push(lotus)
+  scene.add(lotus)
+  lotus.position.copy(position)
+  lightParams.textures.value.push(audioController.texture);
+  lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + 100, lotus.position.z));
+  lightParams.colors.value.push(color);
+  var mat = createShaderMaterial(color);
+  for (var i = 0; i < this.s; i++) {
+    petal = new THREE.Mesh(this.petalGeo, mat);
+    petal.rotation.order = "YXZ";
+    petal.rotation.y = (i / this.s * (Math.PI * 2));
+    lotus.add(petal);
+  }
+  // //for some reason need to set intial rotation in another loop?? WHY?
+  // for (var i = 0; i < s; i++) {
+  //   petals[i].rotation.x -= 0.2
+  // }
+
+  return lotus
 
   function createShaderMaterial(color) {
 
@@ -61,37 +84,9 @@ var LotusField = function() {
     };
     return new THREE.ShaderMaterial({
       uniforms: uniforms,
-      vertexShader: shaders.vs.ball,
-      fragmentShader: shaders.fs.ball
+      vertexShader: shaders.vs.lotus,
+      fragmentShader: shaders.fs.lotus
     });
   }
 
-
-  var specialLotus = createLotus(new THREE.Vector3(0, petalHeight, 0), new THREE.Vector3(0.8, 0.1, 1.0), true);
-
-
-  function createLotus(position, color) {
-    var lotus = new THREE.Object3D()
-    lotuses.push(lotus)
-    scene.add(lotus)
-    lotus.position.copy(position)
-    var color = color || new THREE.Vector3(Math.random(), Math.random(), Math.random());
-    lightParams.textures.value.push(audioController.texture);
-    lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + 100, lotus.position.z));
-    lightParams.colors.value.push(color);
-    var mat = createShaderMaterial(color);
-    for (var i = 0; i < numPetals; i++) {
-      petal = new THREE.Mesh(geo, mat);
-      petal.rotation.order = "YXZ";
-      petal.rotation.y = (i / numPetals * (Math.PI * 2));
-      petals.push(petal);
-      lotus.add(petal);
-    }
-    // //for some reason need to set intial rotation in another loop?? WHY?
-    // for (var i = 0; i < numPetals; i++) {
-    //   petals[i].rotation.x -= 0.2
-    // }
-
-    return lotus
-  }
 }

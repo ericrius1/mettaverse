@@ -6,9 +6,9 @@ uniform float timer;
 uniform sampler2D t_normal;
 uniform sampler2D t_iri;
 
-uniform vec3 lightPositions[11];
-uniform vec3 lightColors[11];
-uniform sampler2D lightTextures[11];
+uniform vec3 lightPositions[1];
+uniform vec3 lightColors[1];
+uniform sampler2D lightTextures[1];
 uniform vec3 cameraPos;
 
 uniform float normalScale;
@@ -70,7 +70,7 @@ void main(){
     vec3 refl = reflect( -lightDir , fNorm );
     float reflFR = dot( -refl , camDir );
 
-    vec3 iri = texture2D( lightTextures[i]  , vec2( reflFR*reflFR , 0. ) ).xyz * 0.7;
+    vec3 iri = texture2D( lightTextures[i]  , vec2( reflFR*reflFR , 0. ) ).xyz * 0.2 + .2;
 
     float distMultiplier = clamp( lightCutoff / lightDist , 0. , 1. );
     distMultiplier = pow( distMultiplier , lightPower );

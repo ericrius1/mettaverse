@@ -9,7 +9,7 @@ var Pond = function() {
     },
     texScale: {
       type: "f",
-      value: 40
+      value: 111
     },
     bumpHeight: {
       type: 'f',
@@ -73,7 +73,4 @@ var Pond = function() {
   pond.rotation.x = -Math.PI / 2;
   scene.add(pond);
 
-  this.update = function(){
-    var audioTextureData = new Float32Array( this.width * 4 );
-  }
 }
