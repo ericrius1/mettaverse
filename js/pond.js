@@ -17,7 +17,7 @@ var Pond = function() {
     },
     bumpSize: {
       type: 'f',
-      value: 0.001
+      value: 0.01
     },
     bumpSpeed: {
       type: 'f',
@@ -67,7 +67,9 @@ var Pond = function() {
       }
     },
     vertexShader: shaders.vs.pond,
-    fragmentShader: shaders.fs.pond
+    fragmentShader: shaders.fs.pond,
+    transparent: true,
+    opacity: 0.5
   });
   var pond = new THREE.Mesh(pondGeo, pondMat);
   pond.rotation.x = -Math.PI / 2;

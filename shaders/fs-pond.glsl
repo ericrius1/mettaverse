@@ -79,7 +79,7 @@ void main(){
 
   }
 
-  gl_FragColor = vec4( totalIri  , 1. );
+  gl_FragColor = vec4( totalIri  , 0.5 );
 
 
 }

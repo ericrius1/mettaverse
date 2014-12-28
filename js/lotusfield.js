@@ -1,10 +1,16 @@
 var LotusField = function() {
   this.s = 11;
   this.lotuses = [];
+  this.origPetalRot = 0.5;
+
+  this.wrapperMaterial = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.01
+  })
 
 
   var xoff = 0,
-    yoff = 0;
+    yoff = -100;
 
   var petalShape = new THREE.Shape();
   //262, 16
@@ -29,15 +35,17 @@ var LotusField = function() {
 
 
 
-  this.createLotus(new THREE.Vector3(), new THREE.Vector3(0.8, 0.1, 1.0), true);
+  this.createLotus(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0.8, 0.1, 1.0), true);
 
 }
 
 LotusField.prototype.createLotus = function(position, color) {
-  var lotus = new THREE.Object3D()
+  var lotus = new THREE.Mesh(new THREE.SphereGeometry(100), this.wrapperMaterial)
+  lotus.petals = [];
   this.lotuses.push(lotus)
   scene.add(lotus)
   lotus.position.copy(position)
+  lotus.position.y += 100;
   lightParams.textures.value.push(audioController.texture);
   lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + 100, lotus.position.z));
   lightParams.colors.value.push(color);
@@ -46,8 +54,20 @@ LotusField.prototype.createLotus = function(position, color) {
     petal = new THREE.Mesh(this.petalGeo, mat);
     petal.rotation.order = "YXZ";
     petal.rotation.y = (i / this.s * (Math.PI * 2));
+    petal.rotation.x = this.origPetalRot;
     lotus.add(petal);
+    lotus.petals.push(petal)
   }
+
+  objectControls.add(lotus);
+  lotus.hoverOver = function(){
+    document.body.style.cursor = "pointer";
+    this.bloom(lotus)
+  }.bind(this);
+  lotus.hoverOut = function(){
+    document.body.style.cursor = "auto";
+    this.unbloom(lotus)
+  }.bind(this);
   // //for some reason need to set intial rotation in another loop?? WHY?
   // for (var i = 0; i < s; i++) {
   //   petals[i].rotation.x -= 0.2
@@ -89,4 +109,50 @@ LotusField.prototype.createLotus = function(position, color) {
     });
   }
 
+}
+
+LotusField.prototype.bloom = function(lotus) {
+  if (lotus.blooming) {
+    return;
+  }
+  console.log('blooom')
+  lotus.blooming = true;
+  var i = {
+    rotX: lotus.petals[0].rotation.x
+  };
+  var f = {
+    rotX: lotus.petals[0].rotation.x + .5
+  }
+  var bloomTween = new TWEEN.Tween(i, 3000).
+  to(f).
+  onUpdate(function() {
+    _.each(lotus.petals, function(petal) {
+      petal.rotation.x = i.rotX;
+    });
+  }).
+  start();
+  bloomTween.onComplete(function() {
+    lotus.blooming = false;
+  })
+}
+
+LotusField.prototype.unbloom = function(lotus) {
+
+  var i = {
+    rotX: lotus.petals[0].rotation.x
+  };
+  var f = {
+    rotX: this.origPetalRot
+  }
+  var bloomTween = new TWEEN.Tween(i, 3000).
+  to(f).
+  onUpdate(function() {
+    _.each(lotus.petals, function(petal) {
+      petal.rotation.x = i.rotX;
+    });
+  }).
+  start();
+  bloomTween.onComplete(function() {
+    lotus.blooming = false;
+  })
 }
