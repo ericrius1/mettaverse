@@ -10,7 +10,6 @@ var LotusField = function() {
   var petalHeight = 50
   var lotuses = [];
   var mainLotusOffset = 100
-  var lotusRiseTime = 156000
 
   var petalShape = new THREE.Shape(); // From http://blog.burlock.org/html5/130-paths
   //262, 16
@@ -69,74 +68,16 @@ var LotusField = function() {
 
 
   var specialLotus = createLotus(new THREE.Vector3(0, petalHeight, 0), new THREE.Vector3(0.8, 0.1, 1.0), true);
-  setTimeout(function(){
-    specialLotus.rise = true;
-  }, lotusRiseTime)
-  for (var i = 0; i < numLotuses; i++) {
-    var x = radius * Math.cos(i / numLotuses * (Math.PI * 2))
-    var z = radius * Math.sin(i / numLotuses * (Math.PI * 2))
-    var lotus = createLotus(new THREE.Vector3(x, -200, z))
-    lotus.growStartTime = map(z, -radius, radius, bloomTime * 0.35, bloomTime * 0.7)
-    createGrowTween(lotus)
-  }
-
-  function createGrowTween(lotus){
-    var curY = {
-      y: lotus.position.y,
-    }
-    var finalY = {
-      y: petalHeight + _.random(-20, 20)
-    }
-    var growTween = new TWEEN.Tween(curY).
-      to(finalY, 60000).
-      easing(TWEEN.Easing.Cubic.Out).
-      onUpdate(function(){
-        lotus.position.y = curY.y
-      }).
-      delay(lotus.growStartTime).
-      start();
-    growTween.onComplete(function(){
-      setTimeout(function(){
-        console.log(lotus)
-        lotus.flow = true
-      }, _.random(24000, 29000));
-    })
-  }
 
 
-
-  var csd = {
-    rotX: petal.rotation.x
-
-  }
-  var fsd = {
-    rotX: petal.rotation.x += 1.1
-  }
-  var bloomTween = new TWEEN.Tween(csd).
-  to(fsd, bloomTime).
-  easing(TWEEN.Easing.Cubic.In).
-  onUpdate(function() {
-    _.each(petals, function(petal) {
-      petal.rotation.x = csd.rotX;
-    });
-  }).start();
-  bloomTween.onComplete(function(){
-    controls.enabled = true;
-  })
-
-  function createLotus(position, color, specialOffset) {
+  function createLotus(position, color) {
     var lotus = new THREE.Object3D()
     lotuses.push(lotus)
     scene.add(lotus)
     lotus.position.copy(position)
     var color = color || new THREE.Vector3(Math.random(), Math.random(), Math.random());
     lightParams.textures.value.push(audioController.texture);
-    if(specialOffset){
-      lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + mainLotusOffset, lotus.position.x)); 
-    }
-    else{
-      lightParams.positions.value.push(lotus.position);
-    }
+    lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + 100, lotus.position.z));
     lightParams.colors.value.push(color);
     var mat = createShaderMaterial(color);
     for (var i = 0; i < numPetals; i++) {
@@ -145,33 +86,12 @@ var LotusField = function() {
       petal.rotation.y = (i / numPetals * (Math.PI * 2));
       petals.push(petal);
       lotus.add(petal);
-      vertexCount += petal.geometry.vertices.length
     }
-    //for some reason need to set intial rotation in another loop?? WHY?
-    for (var i = 0; i < numPetals; i++) {
-      petals[i].rotation.x -= 0.2
-    }
+    // //for some reason need to set intial rotation in another loop?? WHY?
+    // for (var i = 0; i < numPetals; i++) {
+    //   petals[i].rotation.x -= 0.2
+    // }
 
-    console.log("num vertices", vertexCount)
-    vertexCount = 0;
     return lotus
   }
-
-  this.update = function(){
-    _.each(lotuses, function(lotus){
-      if(lotus.flow){
-        lotus.position.z -= 0.75
-        if(lotus.position.x < 0){
-          lotus.position.x -= 1
-        }
-        else{
-          lotus.position.x += 0.6
-        }
-      }
-      if(specialLotus.rise){
-        specialLotus.position.y += .05
-      }
-    })
-  }
-
 }

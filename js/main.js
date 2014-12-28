@@ -6,9 +6,7 @@
 
 var scene, camera, renderer, clock, objectControls;
 var pond, petalObject, pond, lotusfield;
-var randFloat =THREE.randFloat;
-var bloomTime = 111000
-var camPullbackTime = 140000
+var rf = THREE.randFloat;
 var timer = {
   type: 'f',
   value: 0
@@ -25,9 +23,8 @@ loader.onStart = function() {
 
 
 function init() {
-  var numLotus
-  var stream = new Stream('audio/splendor.mp3', audioController);
-  stream.play();
+  // var stream = new Stream('audio/splendor.mp3', audioController);
+  // stream.play();
   clock = new THREE.Clock();
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({
@@ -44,32 +41,12 @@ function init() {
   container.appendChild(renderer.domElement);
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.maxPolarAngle = Math.PI / 2.1;
-  // controls.enabled = false
+  // controls.maxPolarAngle = Math.PI / 2.1;
 
   objectControls = new ObjectControls(camera);
 
   pond = new Pond();
   lotusfield = new LotusField();
-
-  var csd = {
-    posX: camera.position.x,
-    posY: camera.position.y,
-    posZ: camera.position.z,
-  }
-
-  var fsd = {
-    posX: camera.position.x,
-    posY: camera.position.y + 4000,
-    posZ: camera.position.z + 2000
-  }
-
-  var camTween = new TWEEN.Tween(csd).
-    to(fsd, bloomTime + camPullbackTime).
-    easing(TWEEN.Easing.Cubic.In).
-    onUpdate(function(){
-      camera.position.set(csd.posX, csd.posY, csd.posZ)
-    }).start()
 
 }
 
@@ -82,7 +59,6 @@ function animate() {
   audioController.update();
   renderer.render(scene, camera);
   pond.update();
-  lotusfield.update()
   TWEEN.update();
 }
 

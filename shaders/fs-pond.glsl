@@ -55,7 +55,7 @@ void main(){
 
 
   vec3 totalIri = vec3( 0.);
-  for( int i = 0; i < 11; i++ ){
+  for( int i = 0; i < 1; i++ ){
 
     vec3 lightPos = lightPositions[i];
     lightPos.y += 300.0;
