@@ -69,7 +69,7 @@ var Pond = function() {
     vertexShader: shaders.vs.pond,
     fragmentShader: shaders.fs.pond,
     transparent: true,
-    opacity: 0.5
+    opacity: 0.2
   });
   var pond = new THREE.Mesh(pondGeo, pondMat);
   pond.rotation.x = -Math.PI / 2;

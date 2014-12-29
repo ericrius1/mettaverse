@@ -9,10 +9,11 @@ uniform sampler2D t_audio;
 uniform vec3 cameraPos;
 uniform vec3 color;
 
-uniform float hovered;
+uniform float brightness;
 
 uniform float normalScale;
 uniform float texScale;
+
 
 
 varying vec3 vNorm;
@@ -48,7 +49,7 @@ void main(){
   vec4 aFR = texture2D( t_audio , vec2( facingRatio , 0. ) );
   float heightFactor = map(vPos.y, 0.0, 100.0, 0.3, 0.0);
 
-  vec3 fColor = (color * (aFR.xyz* 0.9)  + color * .2 * facingRatio) - heightFactor;
+  vec3 fColor = (color * (aFR.xyz* 0.9)  + color * brightness * facingRatio) - heightFactor;
   // vec3 fColor = vec3(heightFactor);
 
 

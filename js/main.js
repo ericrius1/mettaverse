@@ -21,6 +21,11 @@ loader.onStart = function() {
   animate();
 }
 
+TWEEN.origTween = TWEEN.Tween;
+TWEEN.Tween = function(options) {
+  return new TWEEN.origTween(options).
+  easing(TWEEN.Easing.Cubic.InOut);
+};
 
 function init() {
   var stream = new Stream('audio/pond.mp3', audioController);

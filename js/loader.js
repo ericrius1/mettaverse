@@ -9,9 +9,9 @@ function Loader(params){
 
   this.curtain = document.createElement('div');
   this.curtain.id = 'curtain';
-  this.curtain.innerText = 'M83'
+  this.curtain.innerText = 'Mediverse'
   document.body.appendChild(this.curtain);
-  $('#curtain').append('<div id = "songInfo">M83 - Splendor</div')
+  $('#curtain').append('<div id = "songInfo">Mediverse</div')
 }
 
 Loader.prototype = {

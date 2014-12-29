@@ -1,11 +1,17 @@
 var LotusField = function() {
   this.s = 11;
   this.lotuses = [];
-  this.origPetalRot = 0.5;
+  this.origPetalRot = 0.7;
+  this.origBrightness = 0.2;
+  this.origTextY = 20;
+  this.origTextScale = .1;
+  this.textCreator = new TextCreator(30);
 
   this.wrapperMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
-    opacity: 0.01
+    opacity: 0.00,
+    depthTest: false
+
   })
 
 
@@ -35,17 +41,17 @@ var LotusField = function() {
 
 
 
-  this.createLotus(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0.8, 0.1, 1.0), true);
+  this.createLotus(new THREE.Vector3(0, -50, 0), new THREE.Vector3(0.8, 0.1, 1.0), "Relax");
 
 }
 
-LotusField.prototype.createLotus = function(position, color) {
+LotusField.prototype.createLotus = function(position, color, text) {
   var lotus = new THREE.Mesh(new THREE.SphereGeometry(100), this.wrapperMaterial)
   lotus.petals = [];
   this.lotuses.push(lotus)
   scene.add(lotus)
   lotus.position.copy(position)
-  lotus.position.y += 100;
+  lotus.translateY(100);
   lightParams.textures.value.push(audioController.texture);
   lightParams.positions.value.push(new THREE.Vector3(lotus.position.x, lotus.position.y + 100, lotus.position.z));
   lightParams.colors.value.push(color);
@@ -58,6 +64,11 @@ LotusField.prototype.createLotus = function(position, color) {
     lotus.add(petal);
     lotus.petals.push(petal)
   }
+
+  lotus.text = this.textCreator.createMesh(text, {size: this.origTextScale, crispness: 1});
+  lotus.text.position.y = this.origTextY;
+
+  lotus.add(lotus.text);
 
   objectControls.add(lotus);
   lotus.hoverOver = function(){
@@ -97,9 +108,9 @@ LotusField.prototype.createLotus = function(position, color) {
         type: 't',
         value: audioController.texture
       },
-      hovered: {
+      brightness: {
         type: 'f',
-        value: 0
+        value: this.origBrightness
       }
     };
     return new THREE.ShaderMaterial({
@@ -112,22 +123,32 @@ LotusField.prototype.createLotus = function(position, color) {
 }
 
 LotusField.prototype.bloom = function(lotus) {
+  lotus.text.lookAt(camera.position);
   if (lotus.blooming) {
     return;
   }
-  console.log('blooom')
   lotus.blooming = true;
   var i = {
-    rotX: lotus.petals[0].rotation.x
+    rotX: lotus.petals[0].rotation.x,
+    brightness: lotus.petals[0].material.uniforms.brightness.value,
+    textY: lotus.text.position.y,
+    textScale: lotus.text.scale.x
   };
   var f = {
-    rotX: lotus.petals[0].rotation.x + .5
+    rotX: lotus.petals[0].rotation.x + .4,
+    brightness: 0.7,
+    textY: lotus.text.position.y + 50,
+    textScale: 20
+
   }
-  var bloomTween = new TWEEN.Tween(i, 3000).
+  var bloomTween = new TWEEN.Tween(i, 2000).
   to(f).
   onUpdate(function() {
     _.each(lotus.petals, function(petal) {
       petal.rotation.x = i.rotX;
+      lotus.petals[0].material.uniforms.brightness.value = i.brightness;
+      lotus.text.position.y = i.textY
+      lotus.text.scale.set(i.textScale, i.textScale, i.textScale);
     });
   }).
   start();
@@ -139,16 +160,25 @@ LotusField.prototype.bloom = function(lotus) {
 LotusField.prototype.unbloom = function(lotus) {
 
   var i = {
-    rotX: lotus.petals[0].rotation.x
+    rotX: lotus.petals[0].rotation.x,
+    brightness: lotus.petals[0].material.uniforms.brightness.value,
+    textY: lotus.text.position.y,
+    textScale: lotus.text.scale.x
   };
   var f = {
-    rotX: this.origPetalRot
+    rotX: this.origPetalRot,
+    brightness: this.origBrightness,
+    textY: this.origTextY,
+    textScale: this.origTextScale
   }
   var bloomTween = new TWEEN.Tween(i, 3000).
   to(f).
   onUpdate(function() {
     _.each(lotus.petals, function(petal) {
       petal.rotation.x = i.rotX;
+      lotus.petals[0].material.uniforms.brightness.value = i.brightness;
+      lotus.text.position.y = i.textY;
+      lotus.text.scale.set(i.textScale, i.textScale, i.textScale);
     });
   }).
   start();
