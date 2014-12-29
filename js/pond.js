@@ -1,7 +1,7 @@
 var pondWidth = 50000;
 var Pond = function() {
 
-  var pondParams = {
+  G.pondParams = {
 
     normalScale: {
       type: "f",
@@ -26,20 +26,25 @@ var Pond = function() {
     bumpCutoff: {
       type: 'f',
       value: 0.5
+    },
+    brightness: {
+      type: 'f',
+      value: 0.5
     }
   }
   var pondGui = gui.addFolder('Pond Params');
-  var pp = pondParams;
+  var pp = G.pondParams;
   pondGui.add(pp.bumpHeight, 'value').name('bumpHeight');
   pondGui.add(pp.bumpSize, 'value').name('bumpSize');
   pondGui.add(pp.bumpSpeed, 'value').name('bumpSpeed');
   pondGui.add(pp.bumpCutoff, 'value').name('bumpCutoff');
   pondGui.add(pp.texScale, 'value').name('texScale');
   pondGui.add(pp.normalScale, 'value').name('normalScale');
+  pondGui.add(pp.brightness, 'value').name('brightness');
 
   var pondGeo = new THREE.PlaneGeometry(pondWidth, pondWidth, 3, 3);
 
-  var pondMat = new THREE.ShaderMaterial({
+  G.pondMaterial = new THREE.ShaderMaterial({
     uniforms: {
       timer: timer,
       t_normal: {
@@ -50,12 +55,13 @@ var Pond = function() {
         type: "t",
         value: TEXTURES.iriTurq
       },
-      normalScale: pondParams.normalScale,
-      texScale: pondParams.texScale,
-      bumpHeight: pondParams.bumpHeight,
-      bumpSize: pondParams.bumpSize,
-      bumpSpeed: pondParams.bumpSpeed,
-      bumpCutoff: pondParams.bumpCutoff,
+      normalScale: G.pondParams.normalScale,
+      texScale: G.pondParams.texScale,
+      bumpHeight: G.pondParams.bumpHeight,
+      bumpSize: G.pondParams.bumpSize,
+      bumpSpeed: G.pondParams.bumpSpeed,
+      bumpCutoff: G.pondParams.bumpCutoff,
+      brightness: G.pondParams.brightness,
       lightCutoff: lightParams.cutoff,
       lightPower: lightParams.power,
       lightPositions: lightParams.positions,
@@ -71,7 +77,7 @@ var Pond = function() {
     transparent: true,
     opacity: 0.2
   });
-  var pond = new THREE.Mesh(pondGeo, pondMat);
+  var pond = new THREE.Mesh(pondGeo, G.pondMaterial);
   pond.rotation.x = -Math.PI / 2;
   scene.add(pond);
 

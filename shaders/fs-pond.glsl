@@ -71,7 +71,7 @@ void main(){
     vec3 refl = reflect( -lightDir , fNorm );
     float reflFR = dot( -refl , camDir );
 
-    vec3 iri = texture2D( lightTextures[i]  , vec2( reflFR*reflFR , 0. ) ).xyz * 0.5 + .3;
+    vec3 iri = texture2D( lightTextures[i]  , vec2( reflFR*reflFR , 0. ) ).xyz * brightness + .3;
 
     float distMultiplier = clamp( lightCutoff / lightDist , 0. , 1. );
     distMultiplier = pow( distMultiplier , lightPower );

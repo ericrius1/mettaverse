@@ -2,7 +2,7 @@ var LotusField = function() {
   this.s = 11;
   this.lotuses = [];
   this.origPetalRot = 0.7;
-  this.origBrightness = 0.2;
+  this.origBrightness = 0.4;
   this.origTextY = 20;
   this.origTextScale = .1;
   this.textCreator = new TextCreator(30);
@@ -136,8 +136,8 @@ LotusField.prototype.bloom = function(lotus) {
   };
   var f = {
     rotX: lotus.petals[0].rotation.x + .4,
-    brightness: 0.7,
-    textY: lotus.text.position.y + 50,
+    brightness: 1.1,
+    textY: lotus.text.position.y + 70,
     textScale: 20
 
   }
@@ -149,6 +149,7 @@ LotusField.prototype.bloom = function(lotus) {
       lotus.petals[0].material.uniforms.brightness.value = i.brightness;
       lotus.text.position.y = i.textY
       lotus.text.scale.set(i.textScale, i.textScale, i.textScale);
+      G.pondMaterial.uniforms.brightness.value = i.brightness
     });
   }).
   start();
@@ -179,6 +180,7 @@ LotusField.prototype.unbloom = function(lotus) {
       lotus.petals[0].material.uniforms.brightness.value = i.brightness;
       lotus.text.position.y = i.textY;
       lotus.text.scale.set(i.textScale, i.textScale, i.textScale);
+      G.pondMaterial.uniforms.brightness.value = i.brightness;
     });
   }).
   start();
