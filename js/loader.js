@@ -11,7 +11,7 @@ function Loader(params){
   this.curtain.id = 'curtain';
   this.curtain.innerText = 'Mediverse'
   document.body.appendChild(this.curtain);
-  $('#curtain').append('<div id = "songInfo">Mediverse</div')
+  $('#curtain').append('<div id = "songInfo">Mettaverse</div')
 }
 
 Loader.prototype = {
